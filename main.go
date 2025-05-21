@@ -45,6 +45,7 @@ func main() {
 		".yaml": {},
 		".yml": {},
 		".toml": {},
+		".ico": {},
 		}
 
 	// Walk through the directory
@@ -55,6 +56,9 @@ func main() {
 
 		// Skip directories
 		if info.IsDir() {
+			if path != dirPath && strings.HasPrefix(info.Name(), ".") {
+				return filepath.SkipDir
+			}
 			return nil
 		}
 

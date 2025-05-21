@@ -63,14 +63,27 @@ func main() {
 			return nil
 		}
 
+		// Skip files with extensions in skipExtensions
+		ext := strings.ToLower(filepath.Ext(path))
+		if _, ok := skipExtensions[ext]; ok {
+			return nil
+		}
+
+		// Compute relative path for the markdown header
+		relPath, err := filepath.Rel(dirPath, path)
+		if err != nil {
+			fmt.Printf("Failed to get the relative path for %s: %v\n", path, err)
+			relPath =  path
+		}
+
 		// Read the file content
 		content, err := ioutil.ReadFile(path)
 		if err != nil {
 			return fmt.Errorf("failed to read file '%s': %v", path, err)
 		}
 
-		// Write the file path as a header
-		header := fmt.Sprintf("\n# %s\n", path)
+		// Write the file path as a header using relative Path
+		header := fmt.Sprintf("\n# %s\n", relPath)
 		if _, err := file.WriteString(header); err != nil {
 			return fmt.Errorf("failed to write header for file '%s': %v", path, err)
 		}

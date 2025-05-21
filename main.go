@@ -30,6 +30,22 @@ func main() {
 	}
 	defer file.Close()
 
+	// Extensions to skip (images and config files)
+	skipExtensions := map[string]struct{} {
+		".jpg": {},
+		".jpeg": {},
+		".png": {},
+		".gif": {},
+		".bmp": {},
+		"tiff": {},
+		".svg": {},
+		".config": {},
+		".ini": {},
+		".yaml": {},
+		".yml": {},
+		".toml": {},
+		}
+
 	// Walk through the directory
 	err = filepath.Walk(dirPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {

@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func main() {
@@ -54,6 +55,11 @@ func main() {
 
 		// Skip directories
 		if info.IsDir() {
+			return nil
+		}
+
+		// Skip files that start with a .dot
+		if strings.HasPrefix(info.Name(), ".") {
 			return nil
 		}
 

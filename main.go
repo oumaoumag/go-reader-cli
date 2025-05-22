@@ -13,6 +13,7 @@ func shouldSkipDir(relPath string, patterns []string) bool {
 	for _, pattern := range patterns {
 		if strings.HasSuffix(pattern, "/") || strings.HasPrefix(pattern, "/")  {
 			dirPattern := strings.TrimSuffix(pattern, "/")
+			dirPattern = strings.TrimPrefix(dirPattern, "/")
 			if match, _ := filepath.Match(dirPattern, relPath); match {
 				return true
 			}

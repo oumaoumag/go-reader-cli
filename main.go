@@ -41,11 +41,14 @@ func main() {
 		"tiff": {},
 		".svg": {},
 		".config": {},
+		".config.ts": {},
+		".config.mjs": {},
 		".ini": {},
 		".yaml": {},
 		".yml": {},
 		".toml": {},
 		".ico": {},
+		".json": {},
 		}
 
 	// Walk through the directory

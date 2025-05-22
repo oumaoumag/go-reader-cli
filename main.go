@@ -82,6 +82,22 @@ func main() {
 		".json": {},
 		}
 
+		// Read .gitigone if it exists
+		patterns := []string{}
+		gitignorePath := filepath.Join(dirPath, ".gitignore")
+		if _, err := os.Stat(gitignorePath); err == nil {
+			content, err := ioutil.ReadFile(gitignorePath)
+			if err == nil {
+				lines := strings.Split(strings(content), "\n")
+				for _, line := range lines {
+					line := strings.TrimSpace(line)
+					if line != "" && !strings.HasPrefix(line, "#") {
+						patterns = append(patterns, line)
+					}
+				}
+			}
+		}
+
 	// Walk through the directory
 	err = filepath.Walk(dirPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {

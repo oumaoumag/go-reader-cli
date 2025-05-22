@@ -104,6 +104,13 @@ func main() {
 			return err
 		}
 
+		// Compute relative path
+		relPath, err := filepath.Rel(dirPath, path)
+		if err != nil {
+			fmt.Printf("Failed to get the relative path for %s: %v\n", path, err)
+			relPath = path
+		}
+
 		// Skip directories
 		if info.IsDir() {
 			if path != dirPath && strings.HasPrefix(info.Name(), ".") {

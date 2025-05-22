@@ -88,7 +88,7 @@ func main() {
 		if _, err := os.Stat(gitignorePath); err == nil {
 			content, err := ioutil.ReadFile(gitignorePath)
 			if err == nil {
-				lines := strings.Split(strings(content), "\n")
+				lines := strings.Split(string(content), "\n")
 				for _, line := range lines {
 					line := strings.TrimSpace(line)
 					if line != "" && !strings.HasPrefix(line, "#") {

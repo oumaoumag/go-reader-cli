@@ -24,6 +24,20 @@ func shouldSkipDir(relPath string, patterns []string) bool {
 	}
 	return false
 }
+
+// shouldSkipFile determines if a file should be skipped based on .gitignore patterns.
+func shouldSkipFile(relPath string, name string, patterns []string) bool {
+	for _, pattern := range patterns {
+		if !strings.HasSuffix(pattern, "/") {
+			if strings.Contains(pattern, "/") {
+				if match, _ := filepath.Match(pattern, name); match {
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
 func main() {
 	if len(os.Args) != 3 {
 		fmt.Println("Usage: go-cli-file-reader <directory-path> <output-md-file>")

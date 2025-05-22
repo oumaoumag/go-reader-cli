@@ -11,7 +11,7 @@ import (
 // ShouldSkipDir determines if a directory should be skipped based on .gitignore patterns.
 func shouldSkipDir(relPath string, patterns []string) bool {
 	for _, pattern := range patterns {
-		if strings.HasSuffix(pattern, "/") {
+		if strings.HasSuffix(pattern, "/") || strings.HasPrefix(pattern, "/")  {
 			dirPattern := strings.TrimSuffix(pattern, "/")
 			if match, _ := filepath.Match(dirPattern, relPath); match {
 				return true
@@ -28,9 +28,9 @@ func shouldSkipDir(relPath string, patterns []string) bool {
 // shouldSkipFile determines if a file should be skipped based on .gitignore patterns.
 func shouldSkipFile(relPath string, name string, patterns []string) bool {
 	for _, pattern := range patterns {
-		if !strings.HasSuffix(pattern, "/") {
+		if !strings.HasSuffix(pattern, "/") || strings.HasPrefix(pattern, "/"){
 			if strings.Contains(pattern, "/") {
-				if match, _ := filepath.Match(pattern, name); match {
+				if match, _ := filepath.Match(pattern, relPath); match {
 					return true
 				}
 			} else {

@@ -8,6 +8,22 @@ import (
 	"strings"
 )
 
+// ShouldSkipDir determines if a directory should be skipped based on .gitignore patterns.
+func shouldSkipDir(relPath string, patterns []string) bool {
+	for _, pattern := range patterns {
+		if strings.HasSuffix(pattern, "/") {
+			dirPattern := strings.TrimSuffix(pattern, "/")
+			if match, _ := filepath.Match(dirPattern, relPath); match {
+				return true
+			}
+		} else {
+			if match, _ := filepath.Match(pattern, relPath); match {
+				return true
+			}
+		}
+	}
+	return false
+}
 func main() {
 	if len(os.Args) != 3 {
 		fmt.Println("Usage: go-cli-file-reader <directory-path> <output-md-file>")
@@ -22,6 +38,7 @@ func main() {
 		fmt.Printf("Directory '%s' does not exist.\n", dirPath)
 		return
 	}
+
 
 	// Open or create the output .md file
 	file, err := os.OpenFile(outputFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)

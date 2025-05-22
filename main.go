@@ -113,7 +113,7 @@ func main() {
 
 		// Skip directories
 		if info.IsDir() {
-			if path != dirPath && strings.HasPrefix(info.Name(), ".") {
+			if (path != dirPath && strings.HasPrefix(info.Name(), ".")) || shouldSkipDir(relPath, patterns) {
 				return filepath.SkipDir
 			}
 			return nil

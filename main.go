@@ -33,6 +33,10 @@ func shouldSkipFile(relPath string, name string, patterns []string) bool {
 				if match, _ := filepath.Match(pattern, name); match {
 					return true
 				}
+			} else {
+				if match, _ := filepath.Match(pattern, name); match {
+					return true
+				}
 			}
 		}
 	}
@@ -90,7 +94,7 @@ func main() {
 			if err == nil {
 				lines := strings.Split(string(content), "\n")
 				for _, line := range lines {
-					line := strings.TrimSpace(line)
+					line = strings.TrimSpace(line)
 					if line != "" && !strings.HasPrefix(line, "#") {
 						patterns = append(patterns, line)
 					}

@@ -111,7 +111,7 @@ func main() {
 			relPath = path
 		}
 
-		// Skip directories
+		// Skip directories matching .gitignore patterns or starting with a dot
 		if info.IsDir() {
 			if (path != dirPath && strings.HasPrefix(info.Name(), ".")) || shouldSkipDir(relPath, patterns) {
 				return filepath.SkipDir
@@ -119,22 +119,13 @@ func main() {
 			return nil
 		}
 
-		// Skip files that start with a .dot
-		if strings.HasPrefix(info.Name(), ".") {
+		// Skip files matching .gitignore patterns, starting with a .dot, or with skipped extensions
+		if shouldSkipFile(relPath, info.Name(), patterns) || strings.HasPrefix(info.Name(), ".") {
 			return nil
 		}
-
-		// Skip files with extensions in skipExtensions
 		ext := strings.ToLower(filepath.Ext(path))
 		if _, ok := skipExtensions[ext]; ok {
 			return nil
-		}
-
-		// Compute relative path for the markdown header
-		relPath, err := filepath.Rel(dirPath, path)
-		if err != nil {
-			fmt.Printf("Failed to get the relative path for %s: %v\n", path, err)
-			relPath =  path
 		}
 
 		// Read the file content

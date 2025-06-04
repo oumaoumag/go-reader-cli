@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -95,7 +94,7 @@ func main() {
 		patterns := []string{}
 		gitignorePath := filepath.Join(dirPath, ".gitignore")
 		if _, err := os.Stat(gitignorePath); err == nil {
-			content, err := ioutil.ReadFile(gitignorePath)
+			content, err := os.ReadFile(gitignorePath)
 			if err == nil {
 				lines := strings.Split(string(content), "\n")
 				for _, line := range lines {
@@ -138,7 +137,7 @@ func main() {
 		}
 
 		// Read the file content
-		content, err := ioutil.ReadFile(path)
+		content, err := os.ReadFile(path)
 		if err != nil {
 			return fmt.Errorf("failed to read file '%s': %v", path, err)
 		}

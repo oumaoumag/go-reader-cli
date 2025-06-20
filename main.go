@@ -79,15 +79,17 @@ func main() {
 		".bmp": {},
 		"tiff": {},
 		".svg": {},
-		".config": {},
-		".config.ts": {},
+		".mp3": {},
+		".mp4": {},
+		// ".config": {},
+		// ".config.ts": {},
 		".config.mjs": {},
 		".ini": {},
 		".yaml": {},
 		".yml": {},
 		".toml": {},
 		".ico": {},
-		".json": {},
+		// ".json": {},
 		}
 
 		// Read .gitigone if it exists

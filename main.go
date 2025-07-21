@@ -10,7 +10,7 @@ import (
 // ShouldSkipDir determines if a directory should be skipped based on .gitignore patterns.
 func shouldSkipDir(relPath string, patterns []string) bool {
 	// Esxplicitly skip node_modules
-	if  strings.Contains(relPath, "lib") || strings.Contains(relPath, "node_modules") {
+	if  strings.Contains(relPath, "lib") || strings.Contains(relPath, "node_modules") || strings.Contains(relPath, "vender") || strings.Contains(relPath, "tmp") || strings.Contains(relPath, "log") {
 		return true
 	}
 	for _, pattern := range patterns {

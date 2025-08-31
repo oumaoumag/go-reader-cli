@@ -10,7 +10,7 @@ import (
 // ShouldSkipDir determines if a directory should be skipped based on .gitignore patterns.
 func shouldSkipDir(relPath string, patterns []string) bool {
 	// Esxplicitly skip node_modules
-	if  strings.Contains(relPath, "lib") || strings.Contains(relPath, "node_modules") || strings.Contains(relPath, "vender") || strings.Contains(relPath, "tmp") || strings.Contains(relPath, "log") {
+	if  strings.Contains(relPath, "lib") || strings.Contains(relPath, "node_modules")|| strings.Contains(relPath, "vender") || strings.Contains(relPath, "vender") || strings.Contains(relPath, "tmp") || strings.Contains(relPath, "log") {
 		return true
 	}
 	for _, pattern := range patterns {
@@ -31,6 +31,15 @@ func shouldSkipDir(relPath string, patterns []string) bool {
 
 // shouldSkipFile determines if a file should be skipped based on .gitignore patterns.
 func shouldSkipFile(relPath string, name string, patterns []string) bool {
+	// Skip all files in the bin/directory
+	if strings.HasPrefix(relPath, "bin/") {
+		return true
+	}
+
+	// Skip specific SQLite database files
+	if name == "development.sqlite3" {
+		return true
+	}
 	for _, pattern := range patterns {
 		if !strings.HasSuffix(pattern, "/") || strings.HasPrefix(pattern, "/"){
 			if strings.Contains(pattern, "/") {
@@ -89,6 +98,7 @@ func main() {
 		".yml": {},
 		".toml": {},
 		".ico": {},
+		".sqlite3": {},
 		// ".json": {},
 		}
 
@@ -129,7 +139,7 @@ func main() {
 			return nil
 		}
 
-		// Skip files matching .gitignore patterns, starting with a .dot, or with skipped extensions
+		// Skip files matching .gitignore patterns, starting with a .dot, in bin/, or with skipped extensions
 		if shouldSkipFile(relPath, info.Name(), patterns) || strings.HasPrefix(info.Name(), ".") {
 			return nil
 		}
@@ -150,8 +160,10 @@ func main() {
 			return fmt.Errorf("failed to write header for file '%s': %v", path, err)
 		}
 
-		// Write the opening backticks and "js"
-		if _, err := file.WriteString("```js\n"); err != nil {
+		// Write the opening backticks with appropirate language identifier
+		lang := getLanguageIdentifier(ext)
+
+		if _, err := file.WriteString(fmt.Sprintf("```%s\n", lang)); err != nil {
 			return fmt.Errorf("failed to write opening backticks for file '%s': %v", path, err)
 		}
 
@@ -174,4 +186,33 @@ func main() {
 	}
 
 	fmt.Println("All files processed successfully and appended to the markdown file.")
+}
+
+// getLanguageIdentifier returns the appropriate Markdown code block language base on the file extentions
+func getLanguageIdentifier(ext string) string {
+	switch strings.ToLower(ext) {
+	case ".rb":
+		return "ruby"
+	case ".js":
+		return "javascript"
+	case ".scss":
+		return "scss"
+	case ".html", "erb":
+		return "html"
+	case ".md":
+		return "markdown"
+	case ".yml", ".yaml":
+		return "yaml"
+	case ".rs":
+		return "rust"
+	case ".go":
+		return "go"
+	case ".py":
+		return "python"
+	case ".sol":
+		return "solidity"
+	default:
+		return ""
+		
+	}
 }

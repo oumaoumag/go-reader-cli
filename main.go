@@ -99,6 +99,7 @@ func main() {
 		".toml": {},
 		".ico": {},
 		".sqlite3": {},
+		".db": {},
 		// ".json": {},
 		}
 

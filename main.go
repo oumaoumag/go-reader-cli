@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"github.com/go-git/go-git/v5"
+	"github.com/go-git/v5/plumbing"
 )
 
 // ShouldSkipDir determines if a directory should be skipped based on .gitignore patterns.
@@ -79,6 +81,34 @@ func checkIfGitOrFilePath(input string) (repoURL string, branch string, isRepo b
 		return repoURL, branch, true
 	}
 	return "", "", false
+}
+
+func cloneRepo(repoURL, branch string) (string, error) {
+	tempDir, err := os.MkdirTemp("",  "go-reader-cli-*")
+	if err != nil {
+		return "", fmt.Errorf("failed to create temp directory: %v", err)
+	}
+
+	cloneOptions := &git.cloneOptions{
+		URL: repoURL,
+	}
+
+	if branch != "" {
+		cloneOptions.ReferenceName  = plumbing.ReferenceName("refs/heads/" + branch)
+		cloneOptions.SingleBranch = true
+	}
+
+	if branch != "" {
+		cloneOptions.ReferenceName = plumbing.ReferenceName("refs/heads/" + branch)
+		cloneOptions.SingleBranch = true
+	}
+
+	_, err = git.PlainClone(tempDir, false, cloneOptions)
+	if err != nil {
+		os.RemoveAll(tempDir)
+		return "", fmt.Errorf("failed to clone repository: %v", err)
+	}
+	return tempDir, nil                                                                                                                                                                                                                                                                                                                                                                                                       
 }
 
 func main() {

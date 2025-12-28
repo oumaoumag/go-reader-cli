@@ -97,12 +97,7 @@ func cloneRepo(repoURL, branch string) (string, error) {
 		cloneOptions.ReferenceName  = plumbing.ReferenceName("refs/heads/" + branch)
 		cloneOptions.SingleBranch = true
 	}
-
-	if branch != "" {
-		cloneOptions.ReferenceName = plumbing.ReferenceName("refs/heads/" + branch)
-		cloneOptions.SingleBranch = true
-	}
-
+	
 	_, err = git.PlainClone(tempDir, false, cloneOptions)
 	if err != nil {
 		os.RemoveAll(tempDir)

@@ -55,6 +55,32 @@ func shouldSkipFile(relPath string, name string, patterns []string) bool {
 	}
 	return false
 }
+
+func checkIfGitOrFilePath(input string) (repoURL string, branch string, isRepo bool) {
+	if strings.HasPrefix(input, "http://") || strings.HasPrefix(input, "https://")  || strings.HasPrefix(input, "git@") {
+		parts := strings.Split(input, "@")
+		if strings.HasPrefix(input, "git@") {
+			// SSH format: git@github.com:user/repo.git@branch
+			if len(parts) > 2 {
+				repoURL = strings.Join(parts[:2], "@")
+				branch = parts[2]
+			} else {
+				repoURL = input
+			}
+		} else {
+			// HTTPS format: https://github.com/user/repo.git
+			if len(parts) > 1 {
+				repoURL = parts[0]
+				branch = parts[1]
+			}  else {
+				repoURL = input
+			}
+		}
+		return repoURL, branch, true
+	}
+	return "", "", false
+}
+
 func main() {
 	if len(os.Args) != 3 {
 		fmt.Println("Usage: go-cli-file-reader <directory-path> <output-md-file>")

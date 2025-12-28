@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 	"github.com/go-git/go-git/v5"
-	"github.com/go-git/v5/plumbing"
+	"github.com/go-git/go-git/v5/plumbing"
 )
 
 // ShouldSkipDir determines if a directory should be skipped based on .gitignore patterns.
@@ -89,16 +89,16 @@ func cloneRepo(repoURL, branch string) (string, error) {
 		return "", fmt.Errorf("failed to create temp directory: %v", err)
 	}
 
-	cloneOptions := &git.cloneOptions{
+	CloneOptions := &git.CloneOptions{
 		URL: repoURL,
 	}
 
 	if branch != "" {
-		cloneOptions.ReferenceName  = plumbing.ReferenceName("refs/heads/" + branch)
-		cloneOptions.SingleBranch = true
+		CloneOptions.ReferenceName  = plumbing.ReferenceName("refs/heads/" + branch)
+		CloneOptions.SingleBranch = true
 	}
-	
-	_, err = git.PlainClone(tempDir, false, cloneOptions)
+
+	_, err = git.PlainClone(tempDir, false, CloneOptions)
 	if err != nil {
 		os.RemoveAll(tempDir)
 		return "", fmt.Errorf("failed to clone repository: %v", err)
@@ -108,12 +108,23 @@ func cloneRepo(repoURL, branch string) (string, error) {
 
 func main() {
 	if len(os.Args) != 3 {
-		fmt.Println("Usage: go-cli-file-reader <directory-path> <output-md-file>")
+		fmt.Println("Usage: go run . <directory-path> <output-md-file>\n	go run . <git repo url> <output-md-filename>")
 		return
 	}
 
 	dirPath := os.Args[1]
 	outputFile := os.Args[2]
+
+	// Check if the dirPath is a git repository
+	repoURL, branch, isRepo := checkIfGitOrFilePath(dirPath)
+	if isRepo {
+		tempDir, err := cloneRepo(repoURL, branch)
+		if err != nil {
+			fmt.Printf("Error Cloning repo - '%s': %s\n", repoURL, err)
+			return
+		}
+		dirPath = tempDir
+	}
 
 	// Check if the directory exists
 	if _, err := os.Stat(dirPath); os.IsNotExist(err) {
